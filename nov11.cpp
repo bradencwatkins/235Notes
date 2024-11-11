@@ -24,10 +24,11 @@ bool find(Node *tree, int item) {
     }
 }
 
-bool insert(Node *tree, int item) {
+bool insert(Node *&tree, int item) {
     if (tree == nullptr) {
         Node *n = new Node(item);
         tree = n;
+        return true;
     }
     if (tree->data == item) {
         return false;
