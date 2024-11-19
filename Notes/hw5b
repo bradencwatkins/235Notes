@@ -1,0 +1,135 @@
+using namespace std;
+#include <iostream>
+#pragma once
+
+
+template <typename T>
+class BST {
+public:
+    struct Node {
+        T value;
+        Node* left;
+        Node* right;
+
+
+        Node(T v) : value(v), left(nullptr), right(nullptr) {} //:D
+    };
+
+    BST() : root(nullptr) {}
+
+    ~BST() {
+        clear(root);
+    }
+
+    bool insert(T item) {
+        return insert(root, item);
+    }
+
+    bool insert(Node *&tree, T item) {
+        if (tree == nullptr) {
+            tree = new Node(item);
+            numNodes++;
+            return true;
+        }
+        if (tree->value == item) {
+            return false;
+        }
+        else if (tree->value < item) {
+            return insert(tree->left, item);
+        }
+        else {
+            return insert(tree->right, item);
+        }
+    }
+
+    bool remove(T item) {
+        return remove(root, item);
+    }
+
+    bool remove(Node *&tree, T item) {
+        if (tree == nullptr) {
+            return false;
+        }
+        if (tree->value == item) {
+            if (tree->left == nullptr && tree->right == nullptr) {
+                delete tree;
+                numNodes--;
+                return true;
+            }
+            else if (tree->left == nullptr) {
+                Node* temp = tree->right;
+                delete tree;
+                tree = temp;
+                numNodes--;
+                return true;
+            }
+            else if (tree->right == nullptr) {
+                Node* temp = tree->left;
+                delete tree;
+                tree = temp;
+                numNodes--;
+                return true;
+            }
+            else {
+                Node* left = tree->left;
+                while (left->right != nullptr) {
+                    left = left->right;
+                }
+                tree->value = left->value;
+                return remove(tree->left, left->value);
+            }
+
+        }
+        if (tree->value < item) {
+            return remove(tree->right, item);
+        }
+        else if (tree->value > item) {
+            return remove(tree->left, item);
+        }
+    }
+
+    bool contains(T item) {
+        return contains(root, item);
+    }
+
+    bool contains(Node* tree, T item) {
+        if (tree == nullptr) {
+            return false;
+        }
+        if (tree->value == item) {
+            return true;
+        }
+        else if (tree->value < item) {
+            return contains(tree->right, item);
+        }
+        else {
+            return contains(tree->left, item);
+        }
+    }
+
+    const Node* getRootNode() const {
+        return root;
+    }
+
+    void clear() {
+        clear(root);
+    }
+
+    void clear(Node *&tree) {
+        if (tree != nullptr) {
+            clear(tree->left);
+            clear(tree->right);
+            delete tree;
+            tree = nullptr;
+        }
+        numNodes = 0;
+    }
+
+    int size() {
+        return numNodes;
+    }
+
+private:
+    int numNodes = 0;
+    Node* root;
+};
